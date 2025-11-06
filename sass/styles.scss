@@ -899,3 +899,26 @@ body.modal-open {
 .modal-body {
   padding:25px;
 }
+
+/* Add this CSS to your main stylesheet */
+
+.alert-message {
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 4px;
+  opacity: 0; /* Starts hidden */
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+  transform: translateY(10px); /* Starts slightly lower */
+}
+
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+/* Class to show the alert with animation */
+.show-alert {
+  opacity: 1;
+  transform: translateY(0);
+}

@@ -438,8 +438,9 @@
                 <h3>What are you waiting for?</h3>
                 <p>We would greatly appreciate if you could RSVP before 1st of November '17</p>
                 <form id="rsvp-form" class="rsvp-form"
-                      action=""
-                      method="POST">
+                      data-netlify="true"
+                      method="POST"
+                      name="rsvp">
                     <div class="row">
                         <div class="col-md-6 col-sm-6">
                             <div class="form-input-group">
@@ -523,5 +524,75 @@
     ga('create', 'UA-46465113-4', 'auto');
     ga('send', 'pageview');
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('rsvp-form');
+        const alertWrapper = document.getElementById('alert-wrapper');
+
+        // Function to encode form data for Netlify
+        function encode(data) {
+            return Object.keys(data)
+                .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+                .join("&");
+        }
+
+        // Function to display the animated alert
+        function displayAlert(message, type) {
+            alertWrapper.innerHTML = `<div id="form-alert" class="alert-message alert-${type}">${message}</div>`;
+
+            // Use a timeout to apply the 'show-alert' class after a brief delay,
+            // triggering the CSS transition.
+            setTimeout(() => {
+                const alertElement = document.getElementById('form-alert');
+                if (alertElement) {
+                    alertElement.classList.add('show-alert');
+                }
+            }, 10); // Small delay
+
+            // Hide the alert after 5 seconds
+            setTimeout(() => {
+                const alertElement = document.getElementById('form-alert');
+                if (alertElement) {
+                    alertElement.classList.remove('show-alert');
+                    setTimeout(() => {
+                        alertWrapper.innerHTML = ''; // Clear after transition
+                    }, 500);
+                }
+            }, 5000);
+        }
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault(); // Stop default HTML submission
+
+            // Get the form data
+            const formData = new FormData(form);
+            const data = {};
+            formData.forEach((value, key) => (data[key] = value));
+
+            // Submit to Netlify's endpoint
+            fetch("/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: encode(data)
+            })
+                .then(response => {
+                    if (response.status === 200) {
+                        // Success!
+                        displayAlert("🎉 Thank you! Your RSVP has been successfully sent!", "success");
+                        form.reset(); // Clear the form fields
+                    } else {
+                        // Handle potential errors (e.g., Netlify spam filter)
+                        displayAlert("Oops! Something went wrong. Please try again.", "error");
+                    }
+                })
+                .catch(error => {
+                    // Handle network errors
+                    displayAlert(`Submission failed: ${error.message}`, "error");
+                });
+        });
+    });
+</script>
+
 </body>
 </html>
