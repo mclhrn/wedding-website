@@ -36,5 +36,16 @@ gulp.task('start', function() {
     return open(filePath);
 });
 
+// Add this to your gulpfile.js:
+
+// Define the 'build' task to run both compilation steps
+gulp.task('build', ['sass', 'minify-js'], function(done) {
+    // You can optionally add a task to copy or move final files to the
+    // Netlify publish directory (e.g., './dist') here,
+    // or just rely on your other tasks outputting to the correct location.
+    console.log('Build complete!');
+    done();
+});
+
 // default task
 gulp.task('default', gulp.series('sass', 'minify-js'));
