@@ -36,14 +36,30 @@ gulp.task('start', function() {
     return open(filePath);
 });
 
-// Add this to your gulpfile.js:
+gulp.task('copy-html-assets', function() {
+    // Selects ALL necessary files:
+    // 1. **/*.html (all HTML files, including root index.html)
+    // 2. css/**/*.css (all compiled CSS)
+    // 3. js/**/*.js (all minified JS)
+    // 4. images/**/* (assuming you have an images folder)
+    return gulp.src([
+        '**/*.html',
+        'css/**/*.css',
+        'js/**/*.js',
+        'images/**/*'
+    ], {
+        // The base option is critical: it tells Gulp to preserve the folder
+        // structure relative to the root of your project.
+        base: './'
+    })
+        .pipe(gulp.dest('dist')); // <-- THIS CREATES THE 'dist' FOLDER
+});
 
-// Define the 'build' task to run both compilation steps
-// Replace the old task (which was likely failing on line 42) with this:
 gulp.task('build',
-    // The second argument must be a function.
-    // Use gulp.parallel() to run sass and minify-js at the same time.
-    gulp.parallel('sass', 'minify-js')
+    gulp.series(
+        gulp.parallel('sass', 'minify-js'), // Step 1: Compile assets
+        'copy-html-assets'                  // Step 2: Move everything to 'dist'
+    )
 );
 
 // default task
