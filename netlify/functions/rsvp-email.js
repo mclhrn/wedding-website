@@ -14,7 +14,7 @@ exports.handler = async (event, context) => {
     const formData = JSON.parse(event.body);
     
     // Extract form fields
-    const { name, email, extras, invite_code } = formData;
+    const { name, email, plus_one_name, dietary_requirements, attending } = formData;
 
     // Get email configuration from environment variables
     const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
@@ -51,20 +51,26 @@ exports.handler = async (event, context) => {
       subject: `New RSVP from ${name}`,
       html: `
         <h2>New RSVP Received</h2>
+        <p><strong>Attending:</strong> ${attending === 'yes' ? 'Yes' : 'No'}</p>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Additional Guests:</strong> ${extras}</p>
-        <p><strong>Invite Code:</strong> ${invite_code}</p>
+        ${attending === 'yes' ? `
+          <p><strong>+1 Name:</strong> ${plus_one_name || 'None'}</p>
+          <p><strong>Dietary Requirements:</strong> ${dietary_requirements || 'None'}</p>
+        ` : ''}
         <hr>
         <p><em>This RSVP was submitted through your wedding website.</em></p>
       `,
       text: `
         New RSVP Received
         
+        Attending: ${attending === 'yes' ? 'Yes' : 'No'}
         Name: ${name}
         Email: ${email}
-        Additional Guests: ${extras}
-        Invite Code: ${invite_code}
+        ${attending === 'yes' ? `
+        +1 Name: ${plus_one_name || 'None'}
+        Dietary Requirements: ${dietary_requirements || 'None'}
+        ` : ''}
         
         This RSVP was submitted through your wedding website.
       `
@@ -91,4 +97,5 @@ exports.handler = async (event, context) => {
     };
   }
 };
+
 

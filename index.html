@@ -442,46 +442,71 @@
                       method="POST"
                       name="rsvp">
                     <input type="hidden" name="form-name" value="rsvp" />
+                    
+                    <!-- Attendance Question -->
                     <div class="row">
-                        <div class="col-md-6 col-sm-6">
-                            <div class="form-input-group">
-                                <i class="fa fa-envelope"></i><input type="email" name="email" class=""
-                                                                     placeholder="Your email"
+                        <div class="col-md-12">
+                            <div class="form-input-group attendance-question">
+                                <i class="fa fa-calendar-check-o"></i>
+                                <label class="attendance-label">Will you be attending?</label>
+                                <div class="attendance-options">
+                                    <label class="radio-option">
+                                        <input type="radio" name="attending" value="yes" required>
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="attending" value="no" required>
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Conditional Fields - Hidden by default -->
+                    <div id="conditional-fields" class="conditional-fields" style="display: none;">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-input-group">
+                                    <i class="fa fa-envelope"></i><input type="email" name="email" class=""
+                                                                         placeholder="Your email"
+                                                                         required>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <div class="form-input-group">
+                                    <i class="fa fa-user"></i><input name="name" class=""
+                                                                     placeholder="Your name"
                                                                      required>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-6 col-sm-6">
-                            <div class="form-input-group">
-                                <i class="fa fa-user"></i><input name="name" class=""
-                                                                 placeholder="Your name"
-                                                                 required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 col-sm-6">
-                            <div class="form-input-group">
-                                <i class="fa fa-users"></i><input type="number" name="extras" class="" min="0"
-                                                                  max="4"
-                                                                  placeholder="Husband/Wife or kids"
-                                                                  required>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-sm-6">
-                            <div class="form-input-group">
-                                <i class="fa fa-key"></i><input type="number" name="invite_code" id="invite_code"
-                                                                class="" min="0"
-                                                                placeholder="Invite code"
-                                                                required>
+                        
+                        <!-- Additional fields for "Yes" attendees only -->
+                        <div id="attending-yes-fields" class="attending-yes-fields" style="display: none;">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-input-group">
+                                        <i class="fa fa-users"></i><input type="text" name="plus_one_name" class=""
+                                                                          placeholder="+1 Name">
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="form-input-group">
+                                        <i class="fa fa-cutlery"></i><input type="text" name="dietary_requirements" id="dietary_requirements"
+                                                                            class=""
+                                                                            placeholder="Dietary Requirements">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    
                     <div class="row">
                         <div class="col-md-12" id="alert-wrapper"></div>
                     </div>
-                    <button class="btn-fill rsvp-btn">
-                        Yes,
-                        that's me!
+                    <button class="btn-fill rsvp-btn" id="submit-btn" style="display: none;">
+                        SEND RSVP
                     </button>
                 </form>
             </div>
@@ -530,6 +555,54 @@
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('rsvp-form');
         const alertWrapper = document.getElementById('alert-wrapper');
+        const conditionalFields = document.getElementById('conditional-fields');
+        const attendingYesFields = document.getElementById('attending-yes-fields');
+        const submitBtn = document.getElementById('submit-btn');
+        const attendingRadios = document.querySelectorAll('input[name="attending"]');
+
+        // Handle attendance selection
+        attendingRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                const attendingValue = this.value;
+                
+                if (attendingValue === 'yes') {
+                    // Show all fields including +1 Name and Dietary Requirements
+                    conditionalFields.style.display = 'block';
+                    setTimeout(() => {
+                        conditionalFields.classList.add('show');
+                    }, 10);
+                    
+                    setTimeout(() => {
+                        attendingYesFields.style.display = 'block';
+                        setTimeout(() => {
+                            attendingYesFields.classList.add('show');
+                        }, 10);
+                    }, 200);
+                    
+                    // Show submit button
+                    setTimeout(() => {
+                        submitBtn.style.display = 'block';
+                    }, 400);
+                } else if (attendingValue === 'no') {
+                    // Hide additional fields for "Yes" attendees
+                    attendingYesFields.classList.remove('show');
+                    setTimeout(() => {
+                        attendingYesFields.style.display = 'none';
+                    }, 400);
+                    
+                    // Show only name and email fields
+                    conditionalFields.style.display = 'block';
+                    setTimeout(() => {
+                        conditionalFields.classList.add('show');
+                    }, 10);
+                    
+                    // Show submit button
+                    setTimeout(() => {
+                        submitBtn.style.display = 'block';
+                    }, 200);
+                }
+            });
+        });
 
         // Function to encode form data for Netlify
         function encode(data) {
@@ -592,11 +665,13 @@
                             console.error("Email notification failed:", err);
                         });
 
-                        // Success!
-                        displayAlert("🎉 Thank you! Your RSVP has been successfully sent!", "success");
-                        form.reset(); // Clear the form fields
+                        // Clear the form fields
+                        form.reset();
                         
-                        // Show the thank you modal
+                        // Clear any loading/alert messages
+                        alertWrapper.innerHTML = '';
+                        
+                        // Show the thank you modal with calendar invites
                         setTimeout(() => {
                             $('#rsvp-modal').modal('show');
                         }, 500);

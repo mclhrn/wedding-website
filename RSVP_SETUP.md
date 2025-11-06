@@ -68,6 +68,6 @@ After setting up environment variables, deploy your site. The form will automati
 The form captures:
 - **name**: Guest's name
 - **email**: Guest's email address
-- **extras**: Number of additional guests
-- **invite_code**: Invitation code
+- **plus_one_name**: Name of additional guest (+1)
+- **dietary_requirements**: Any dietary requirements or restrictions
 
