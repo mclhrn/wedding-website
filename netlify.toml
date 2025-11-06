@@ -1,0 +1,15 @@
+[build]
+  publish = "."
+  functions = "netlify/functions"
+
+# Netlify Forms configuration
+[[plugins]]
+  package = "@netlify/plugin-lighthouse"
+
+# Environment variables should be set in Netlify dashboard:
+# SMTP_HOST (default: smtp.gmail.com)
+# SMTP_PORT (default: 587)
+# SMTP_USER (your email address)
+# SMTP_PASSWORD (your email app password)
+# RECIPIENT_EMAIL (email to receive RSVPs, defaults to SMTP_USER)
+

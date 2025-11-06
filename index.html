@@ -441,6 +441,7 @@
                       data-netlify="true"
                       method="POST"
                       name="rsvp">
+                    <input type="hidden" name="form-name" value="rsvp" />
                     <div class="row">
                         <div class="col-md-6 col-sm-6">
                             <div class="form-input-group">
@@ -570,17 +571,35 @@
             const data = {};
             formData.forEach((value, key) => (data[key] = value));
 
-            // Submit to Netlify's endpoint
+            // Show loading message
+            displayAlert("Just a sec! We are saving your details...", "info");
+
+            // Submit to Netlify Forms endpoint
             fetch("/", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
                 body: encode(data)
             })
                 .then(response => {
-                    if (response.status === 200) {
+                    if (response.ok) {
+                        // Also trigger email notification
+                        fetch("/.netlify/functions/rsvp-email", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(data)
+                        }).catch(err => {
+                            // Log error but don't show to user - form was still saved
+                            console.error("Email notification failed:", err);
+                        });
+
                         // Success!
                         displayAlert("🎉 Thank you! Your RSVP has been successfully sent!", "success");
                         form.reset(); // Clear the form fields
+                        
+                        // Show the thank you modal
+                        setTimeout(() => {
+                            $('#rsvp-modal').modal('show');
+                        }, 500);
                     } else {
                         // Handle potential errors (e.g., Netlify spam filter)
                         displayAlert("Oops! Something went wrong. Please try again.", "error");
