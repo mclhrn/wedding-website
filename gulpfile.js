@@ -39,13 +39,12 @@ gulp.task('start', function() {
 // Add this to your gulpfile.js:
 
 // Define the 'build' task to run both compilation steps
-gulp.task('build', ['sass', 'minify-js'], function(done) {
-    // You can optionally add a task to copy or move final files to the
-    // Netlify publish directory (e.g., './dist') here,
-    // or just rely on your other tasks outputting to the correct location.
-    console.log('Build complete!');
-    done();
-});
+// Replace the old task (which was likely failing on line 42) with this:
+gulp.task('build',
+    // The second argument must be a function.
+    // Use gulp.parallel() to run sass and minify-js at the same time.
+    gulp.parallel('sass', 'minify-js')
+);
 
 // default task
 gulp.task('default', gulp.series('sass', 'minify-js'));
