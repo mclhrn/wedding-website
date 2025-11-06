@@ -1,5 +1,6 @@
 'use strict';
-
+const opener = require('open');
+const open = opener.default || opener;
 var gulp = require('gulp');
 var sass = require('gulp-sass')(require('sass'));
 var uglify = require('gulp-uglify');
@@ -24,6 +25,15 @@ gulp.task('minify-js', function () {
         .pipe(uglify())
         .pipe(rename({basename: 'scripts.min'}))
         .pipe(gulp.dest('./js'));
+});
+
+// --- ADD THIS NEW TASK ---
+gulp.task('start', function() {
+    // Define the path to your index.html file
+    const filePath = 'index.html';
+
+    // Use the correctly defined open function
+    return open(filePath);
 });
 
 // default task
