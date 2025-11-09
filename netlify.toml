@@ -1,16 +1,13 @@
 [build]
-  command = "npm run build"
-  publish = ".next"
+command = "npm run build"
+publish = ".next" # Typically correct for Next.js builds
+functions = "netlify/functions" # Merged from the second block
 
 [[plugins]]
-  package = "@netlify/plugin-nextjs"
-[build]
-  publish = "."
-  functions = "netlify/functions"
+package = "@netlify/plugin-nextjs"
 
-# Netlify Forms configuration
 [[plugins]]
-  package = "@netlify/plugin-lighthouse"
+package = "@netlify/plugin-lighthouse"
 
 # Environment variables should be set in Netlify dashboard:
 # SMTP_HOST (default: smtp.gmail.com)
