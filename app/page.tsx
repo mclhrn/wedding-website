@@ -10,26 +10,22 @@ export default function Home() {
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [lastResponse, setLastResponse] = useState<"accept" | "decline" | null>(null);
 
-  const encodeFormData = (data: FormData) => {
-    const pairs: [string, string][] = [];
-    data.forEach((value, key) => {
-      const stringValue =
-          typeof value === "string" ? value : value instanceof File ? value.name : String(value);
-      pairs.push([key, stringValue]);
-    });
-    return new URLSearchParams(pairs).toString();
-  };
-
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     setFormStatus("submitting");
     const form = event.currentTarget;
     const formData = new FormData(form);
     formData.append("form-name", form.getAttribute("name") ?? "rsvp");
+    const payload: Record<string, string> = {};
+    formData.forEach((value, key) => {
+      if (typeof value === "string") {
+        payload[key] = value;
+      }
+    });
 
-    fetch("/?no-cache=1", {
+    fetch("/.netlify/functions/send-rsvp", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encodeFormData(formData)
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     })
         .then((response) => {
           if (!response.ok) {
@@ -285,20 +281,13 @@ export default function Home() {
               <form
                   name="rsvp"
                   method="POST"
-                  action="/?no-cache=1"
-                  data-netlify="true"
-                  data-netlify-honeypot="bot-field"
+                  autoComplete="on"
                   onSubmit={(event) => {
                     event.preventDefault();
                     handleSubmit(event);
                   }}
               >
                 <input type="hidden" name="form-name" value="rsvp" />
-                <p hidden>
-                  <label>
-                    Don’t fill this out: <input name="bot-field" />
-                  </label>
-                </p>
                 <label>
                   Name
                   <input type="text" name="name" required placeholder="Your full name" />
