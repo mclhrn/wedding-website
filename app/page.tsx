@@ -275,7 +275,7 @@ export default function Home() {
           </section>
 
           <section id="RSVP" className="rsvp" aria-labelledby="rsvp-heading">
-            <div data-parallax data-speed="0.22">
+            <div>
               <h2 id="rsvp-heading">RSVP</h2>
               <p>Let us know you&rsquo;re joining the celebration. Kindly respond by May 10.</p>
               <form

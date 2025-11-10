@@ -173,8 +173,11 @@ section > div {
   text-transform: uppercase;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
   gap: clamp(0.35rem, 0.75vw, 0.55rem);
   letter-spacing: 0.22em;
+  text-align: center;
 }
 
 .hero h1 .hero-amp {
@@ -870,6 +873,16 @@ section > div {
     background-attachment: scroll;
   }
 
+  .hero h1 {
+    font-size: clamp(2.4rem, 8vw, 3.8rem);
+    letter-spacing: 0.16em;
+    gap: clamp(0.3rem, 2vw, 0.45rem);
+  }
+
+  .hero h1 .hero-amp {
+    font-size: clamp(3.6rem, 14vw, 6.5rem);
+  }
+
   .nav {
     top: 1rem;
     transform: translate(-50%, 0);
@@ -898,6 +911,17 @@ section > div {
   .map-label span {
     font-size: 0.65rem;
     letter-spacing: 0.14em;
+  }
+
+  .rsvp {
+    align-items: center;
+    padding: 2.5rem clamp(1.25rem, 5vw, 2rem);
+  }
+
+  .rsvp-footer {
+    margin-top: 2rem;
+    padding-top: 2.25rem;
+    gap: 1.75rem;
   }
 }
 
