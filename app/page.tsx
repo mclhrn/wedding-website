@@ -287,7 +287,6 @@ export default function Home() {
                   method="POST"
                   action="/?no-cache=1"
                   data-netlify="true"
-                  netlify
                   data-netlify-honeypot="bot-field"
                   onSubmit={(event) => {
                     event.preventDefault();

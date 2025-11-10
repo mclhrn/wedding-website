@@ -27,7 +27,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         </head>
         <body className={`${cormorant.className} ${greatVibes.variable}`}>
         <div hidden aria-hidden="true">
-            <form name="rsvp" method="POST" action="/?no-cache=1" data-netlify="true" netlify data-netlify-honeypot="bot-field">
+            <form name="rsvp" method="POST" action="/?no-cache=1" data-netlify="true" data-netlify-honeypot="bot-field">
                 <input type="hidden" name="form-name" value="rsvp" />
                 <p>
                     <label>
