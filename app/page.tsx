@@ -26,7 +26,7 @@ export default function Home() {
     const formData = new FormData(form);
     formData.append("form-name", form.getAttribute("name") ?? "rsvp");
 
-    fetch("/", {
+    fetch("/?no-cache=1", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: encodeFormData(formData)
@@ -285,7 +285,9 @@ export default function Home() {
               <form
                   name="rsvp"
                   method="POST"
+                  action="/?no-cache=1"
                   data-netlify="true"
+                  netlify
                   data-netlify-honeypot="bot-field"
                   onSubmit={(event) => {
                     event.preventDefault();
