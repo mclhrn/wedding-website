@@ -256,7 +256,7 @@ export default function Home() {
             <div className="capture-fireflies capture-fireflies--far" aria-hidden="true" data-parallax data-speed="0.08" />
             <div className="capture-content">
               <h2 id="capture-heading">Capture</h2>
-              <p>Share your favorite moments with #N&DSayIDo. We&apos;ll keep the memories rolling.</p>
+              <p>Share your favorite moments with #N&amp;DSayIDo. We&apos;ll keep the memories rolling.</p>
               <div className="capture-gallery">
                 <figure>
                   <img src="/1.jpeg" />

@@ -688,10 +688,10 @@ section > div {
 .rsvp {
   background: var(--parchment);
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: center;
   text-align: center;
-  padding: clamp(0.5rem, 1.5vh, 1rem) clamp(1.5rem, 4vw, 3rem);
+  padding: clamp(1.5rem, 6vh, 2.5rem) clamp(1.5rem, 4vw, 3rem);
   scroll-snap-align: start;
 }
 
@@ -766,6 +766,7 @@ section > div {
 
 .rsvp-footer {
   position: relative;
+  margin-top: auto;
   width: min(640px, 90vw);
   margin-top: 3rem;
   padding-top: 3rem;
