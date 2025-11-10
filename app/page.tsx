@@ -8,6 +8,7 @@ export default function Home() {
   const plusOneRef = useRef<HTMLLabelElement>(null);
   const [snapDisabled, setSnapDisabled] = useState(false);
   const [formStatus, setFormStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [lastResponse, setLastResponse] = useState<"accept" | "decline" | null>(null);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -27,9 +28,14 @@ export default function Home() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     })
-        .then((response) => {
+        .then(async (response) => {
           if (!response.ok) {
-            throw new Error("Network response was not ok");
+            const data = await response.json().catch(() => null);
+            const message =
+                typeof data === "object" && data && "message" in data && typeof data.message === "string"
+                    ? data.message
+                    : "We weren’t able to send your RSVP right now.";
+            throw new Error(message);
           }
           const submittedAttendance = formData.get("attendance");
           if (typeof submittedAttendance === "string" && (submittedAttendance === "accept" || submittedAttendance === "decline")) {
@@ -38,12 +44,18 @@ export default function Home() {
             setLastResponse(null);
           }
           setFormStatus("success");
+          setErrorMessage(null);
           form.reset();
           setAttendance("");
           setSnapDisabled(false);
         })
-        .catch(() => {
+        .catch((error: unknown) => {
           setFormStatus("error");
+          if (error instanceof Error) {
+            setErrorMessage(error.message);
+          } else {
+            setErrorMessage("We weren’t able to send your RSVP right now.");
+          }
         });
   };
 
@@ -333,7 +345,7 @@ export default function Home() {
                     <span>We’re sorry you won’t be with us in Kilkenny, but we’ll be thinking of you on the day.</span>
                 )}
                 {formStatus === "error" && (
-                    <span>Something went awry in the post. Please try once more or reach out directly.</span>
+                    <span>{errorMessage ?? "Something went awry in the post. Please try once more or reach out directly."}</span>
                 )}
               </div>
               <div className="rsvp-footer">

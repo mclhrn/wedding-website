@@ -72,7 +72,7 @@ function buildHtml(data) {
 }
 
 exports.handler = async function handler(event, context) {
-  const requestId = context.awsRequestId || Date.now().toString();
+  const requestId = context.awsRequestId || `local-${Date.now()}`;
 
   if (event.httpMethod !== "POST") {
     return { statusCode: 405, body: "Method Not Allowed" };
@@ -86,7 +86,11 @@ exports.handler = async function handler(event, context) {
     }
 
     const payload = JSON.parse(event.body);
-    console.log(`[${requestId}] Received RSVP payload`, payload);
+    console.log(`[${requestId}] Received RSVP payload`, {
+      name: payload?.name,
+      email: payload?.email,
+      attendance: payload?.attendance
+    });
 
     const transporter = createTransport();
     const to = RECIPIENT_EMAIL || SMTP_USER;
@@ -106,7 +110,11 @@ exports.handler = async function handler(event, context) {
       body: JSON.stringify({ delivered: true })
     };
   } catch (error) {
-    console.error(`[${requestId}] Failed to send RSVP email`, error);
+    console.error(`[${requestId}] Failed to send RSVP email`, {
+      message: error.message,
+      stack: error.stack,
+      code: error.code
+    });
     return {
       statusCode: 500,
       body: JSON.stringify({ delivered: false, message: error.message })
