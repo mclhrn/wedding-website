@@ -239,7 +239,7 @@ export default function Home() {
           <section id="EVENT" className="event" aria-labelledby="event-heading">
             <div className="event-content" data-parallax data-speed="0.12">
               <h2 id="event-heading">The Main Event</h2>
-              <time dateTime="2026-09-12">Saturday · September 12 · 2026</time>
+              <time dateTime="2026-09-12">Saturday · 14:00 · September 12 · 2026</time>
               <p className="details">
                 Ceremony at Langtons Kilkenny, followed by dinner & dancing.
               </p>
